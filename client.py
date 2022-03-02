@@ -1,14 +1,11 @@
 from socket import socket
 from rich import print
 from rich.prompt import Prompt
+import pickle
+import team_local_tactics as tlt
 
-player_number = 0
 sock = socket()
 
-def set_player_number(player_n):
-    #print(player_n)
-    player_number = player_n
-    #print(player_number)
 
 def connect(address, port):    
     server_adress = (address, port)
@@ -18,7 +15,8 @@ def connect(address, port):
 def main():
     connect("localhost", 5555)
     print(sock.recv(1024).decode())
-    set_player_number(sock.recv(1024).decode)
+    tlt.print_available_champs(pickle.loads(sock.recv(1024)))
+    input("> ")
     sock.close()
 
 if __name__ == "__main__":
