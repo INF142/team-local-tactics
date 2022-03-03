@@ -5,7 +5,15 @@ from _thread import *
 import pickle
 
 threads = []
-    
+lock = 1
+
+def get_champion_from_client(connection, num):
+        #if num == lock:
+        print(connection.recv(1024).decode())
+        print(connection.recv(1024).decode())
+            #num = num + 1
+        #else:
+            #get_champion_from_client(connection, num)
 
 def multi_threaded_client(connection, thread_num):
     connection.send('\n'
@@ -14,6 +22,8 @@ def multi_threaded_client(connection, thread_num):
           'Each player choose a champion each time.'
           '\n\nYou are player number {0} \n'.format(thread_num).encode())
     connection.send(pickle.dumps(tlt.load_some_champs()))
+    get_champion_from_client(connection, thread_num)
+    connection.send("this is the server".encode())
 
 def main():
     sock = socket()
@@ -25,7 +35,8 @@ def main():
     while True:
         conn, _ = sock.accept()
         threadcount = threadcount + 1
-        threads.append(start_new_thread(multi_threaded_client, (conn, threadcount)))        
+        threads.append(start_new_thread(multi_threaded_client, (conn, threadcount)))
+                
 
     
 if __name__ == "__main__":
