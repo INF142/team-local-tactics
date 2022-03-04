@@ -1,12 +1,14 @@
 import numbers
 from socket import socket, SOL_SOCKET, SO_REUSEADDR
 from threading import *
+import threading
 import team_local_tactics as tlt
 from _thread import *
 import pickle
 
 threads = []
 champions_selected = []
+mylock = 2
 
 class Client_thread(Thread):
     def __init__(self,conn,adr, number, champ_list):
@@ -21,19 +23,19 @@ class Client_thread(Thread):
     def run(self):
         print("connection from", self.cadr)
         self.csocket.send(self.client_number.encode())
-        self.csocket.send(pickle.dumps(self.champ_list))
-        for i in range(2):
-            self.csocket.send(pickle.dumps(champions_selected))
-            print(self.csocket.recv(1024).decode())
+        #self.csocket.send(pickle.dumps(self.champ_list))
+        if mylock != int(self.client_number):
+            threading.Lock().acquire()
+            print(f"thread {self.client_number} should have the lock")
+            self.csocket.send("give me a champ, champ!".encode())
+        #for i in range(2):
+        #    self.csocket.send(pickle.dumps(champions_selected))
+        #    print(self.csocket.recv(1024).decode())
         
 
-def get_champion_from_client(connection, num):
-        #if num == lock:
-        print(connection.recv(1024).decode())
-        print(connection.recv(1024).decode())
-            #num = num + 1
-        #else:
-            #get_champion_from_client(connection, num)
+#def get_champion_from_client(connection, num):
+ #       glock = threading.Lock()
+  #      undefined
 
 
 def main():
@@ -52,10 +54,12 @@ def main():
         conn, adr = sock.accept()
         threadCount = threadCount + 1
         newthread = Client_thread(conn, adr, threadCount, champ_list)
+        threads.append(newthread)
+        if len(threads) > 1:
+            print("many threads")
         newthread.start()
-        #conn.send('1'.encode())
-        #conn.send(pickle.dumps(champ_list))
-        #conn.close()
+
+        conn.close()
         
 
     
