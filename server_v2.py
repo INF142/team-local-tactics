@@ -22,15 +22,17 @@ class Client_thread(Thread):
         
     def run(self):
         print("connection from", self.cadr)
+        print("number is: ", self.client_number)
         self.csocket.send(self.client_number.encode())
-        #self.csocket.send(pickle.dumps(self.champ_list))
-        if mylock != int(self.client_number):
-            threading.Lock().acquire()
-            print(f"thread {self.client_number} should have the lock")
-            self.csocket.send("give me a champ, champ!".encode())
+        self.csocket.send(pickle.dumps(self.champ_list))
+        #if mylock != int(self.client_number):
+        #    threading.Lock().acquire()
+        #    print(f"thread {self.client_number} should have the lock")
+        self.csocket.send("give me a champ, champ!".encode())
         #for i in range(2):
         #    self.csocket.send(pickle.dumps(champions_selected))
         #    print(self.csocket.recv(1024).decode())
+        self.csocket.close()
         
 
 #def get_champion_from_client(connection, num):
@@ -54,12 +56,9 @@ def main():
         conn, adr = sock.accept()
         threadCount = threadCount + 1
         newthread = Client_thread(conn, adr, threadCount, champ_list)
-        threads.append(newthread)
-        if len(threads) > 1:
-            print("many threads")
+        #threads.append(newthread)
+        #print(threads)
         newthread.start()
-
-        conn.close()
         
 
     

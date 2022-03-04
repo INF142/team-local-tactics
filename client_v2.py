@@ -8,6 +8,8 @@ sock = socket()
 
 def get_player_number() -> int:
     player = sock.recv(1024).decode()
+    print(type(player))
+    print(player)
     return int(player)
  
 
