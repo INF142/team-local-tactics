@@ -11,3 +11,5 @@ while True:
         conn, _ = sock.accept()
         conn.send(pickle.dumps(tlt.load_some_champs()))
         conn.close()
+        
+#TODO: implement a datbase
