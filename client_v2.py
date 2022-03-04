@@ -42,7 +42,7 @@ def main():
           'You are now connectet to our server!\n'
           'When there is two players, you will get the opportunity to pick your first champion. \n'
           '\n\nYou are player number {0} \n'.format(player))
-    print(pickle.loads(sock.recv(1024)))
+    print(print_available_champs(pickle.loads(sock.recv(1024))))
 
     sock.close()
 
