@@ -45,12 +45,12 @@ def main():
           'When there is two players connected, you will get the opportunity to pick your first champion. \n'
           '\n\nYou are player number {0} \n'.format(player))
     print(print_available_champs(pickle.loads(sock.recv(1024))))
+    
     print(sock.recv(1024).decode())
-    #for i in range(1, 3):
-    #    print(pickle.loads(sock.recv(1024)))
-    #    sock.send(input(f"Champion {i} is: ").encode())
+    
+    sock.send(input("> ").encode())
 
-    #sock.close()
+    sock.close()
 
 if __name__ == "__main__":
     main()
