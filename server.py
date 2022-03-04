@@ -1,4 +1,6 @@
+from concurrent.futures import thread
 from socket import socket, SOL_SOCKET, SO_REUSEADDR
+from sqlite3 import threadsafety
 from threading import Thread
 import team_local_tactics as tlt
 from _thread import *
@@ -8,12 +10,9 @@ threads = []
 lock = 1
 
 def get_champion_from_client(connection, num):
-        #if num == lock:
-        print(connection.recv(1024).decode())
-        print(connection.recv(1024).decode())
-            #num = num + 1
-        #else:
-            #get_champion_from_client(connection, num)
+    undefined
+    
+    #TODO: implement lock
 
 def multi_threaded_client(connection, thread_num):
     connection.send('\n'
