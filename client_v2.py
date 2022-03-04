@@ -40,9 +40,12 @@ def main():
           'Welcome to [bold yellow]Team Local Tactics[/bold yellow]!'
           '\n'
           'You are now connectet to our server!\n'
-          'When there is two players, you will get the opportunity to pick your first champion. \n'
+          'When there is two players connected, you will get the opportunity to pick your first champion. \n'
           '\n\nYou are player number {0} \n'.format(player))
     print(print_available_champs(pickle.loads(sock.recv(1024))))
+    for i in range(1, 3):
+        print(sock.recv(1024).decode())
+        sock.send(input(f"Champion {i} is: "))
 
     sock.close()
 

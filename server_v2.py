@@ -6,7 +6,7 @@ from _thread import *
 import pickle
 
 threads = []
-
+champions_selected = []
 
 class Client_thread(Thread):
     def __init__(self,conn,adr, number, champ_list):
@@ -21,7 +21,11 @@ class Client_thread(Thread):
     def run(self):
         print("connection from", self.cadr)
         self.csocket.send(self.client_number.encode())
-        self.csocket.send(pickle.dumps(self.champ_list))    
+        self.csocket.send(pickle.dumps(self.champ_list))
+        for i in range(2):
+            self.csocket.send(pickle.dumps(champions_selected))
+            print(self.csocket.recv(1024).decode())
+        
 
 def get_champion_from_client(connection, num):
         #if num == lock:
