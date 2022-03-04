@@ -28,6 +28,7 @@ class Client_thread(Thread):
         #if mylock != int(self.client_number):
         #    threading.Lock().acquire()
         #    print(f"thread {self.client_number} should have the lock")
+        print(self.csocket.recv(1024).decode())
         self.csocket.send("give me a champ, champ!".encode())
         #for i in range(2):
         #    self.csocket.send(pickle.dumps(champions_selected))

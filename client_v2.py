@@ -50,7 +50,7 @@ def main():
     #    print(pickle.loads(sock.recv(1024)))
     #    sock.send(input(f"Champion {i} is: ").encode())
 
-    sock.close()
+    #sock.close()
 
 if __name__ == "__main__":
     main()
