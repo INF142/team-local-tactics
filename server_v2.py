@@ -1,4 +1,3 @@
-import numbers
 from socket import socket, SOL_SOCKET, SO_REUSEADDR
 from threading import *
 import threading
@@ -26,12 +25,20 @@ class Client_thread(Thread):
         self.csocket.send(self.client_number.encode())
         self.csocket.send(pickle.dumps(self.champ_list))
         
+        print("helloO")
+        
         player1 = []
         player2 = []
         
-        self.csocket.send(tlt.input_champion('Player 1', 'red', self.champ_list, player1, player2).encode())
+        #self.csocket.send(tlt.input_champion('Player 1', 'red', self.champ_list, player1, player2).encode())
+        
+        
+        
+        print("heyThere")
         
         print(self.csocket.recv(1024).decode())
+        
+        self.csocket.send(("This is where we fail folks!").encode())
 
         self.csocket.close()
         

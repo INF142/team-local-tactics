@@ -46,9 +46,11 @@ def main():
           '\n\nYou are player number {0} \n'.format(player))
     print(print_available_champs(pickle.loads(sock.recv(1024))))
     
-    print(sock.recv(1024).decode())
+    
     
     sock.send(input("> ").encode())
+    
+    print(sock.recv(1024).decode())
 
     sock.close()
 
