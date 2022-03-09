@@ -44,14 +44,19 @@ def main():
           'You are now connectet to our server!\n'
           'When there is two players connected, you will get the opportunity to pick your first champion. \n'
           '\n\nYou are player number {0} \n'.format(player))
+    
+    
     print(print_available_champs(pickle.loads(sock.recv(1024))))
+    sock.send("rello".encode())
     
-    print(sock.recv(1024).decode())
-    while True:
-        sock.send(input(">").encode())
-        print(sock.recv(1024).decode())
     
-    print(sock.recv(1024).decode())
+    
+    #while True:
+        #print(sock.recv(1024).decode())
+        #sock.send(input(">").encode())
+        #print(sock.recv(1024).decode())
+    
+    #print(sock.recv(1024).decode())
 
     sock.close()
 

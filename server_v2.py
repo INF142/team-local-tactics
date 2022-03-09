@@ -26,10 +26,8 @@ class Client_thread(Thread):
         print("number is: ", self.client_number)
         self.csocket.send(self.client_number.encode())
         self.csocket.send(pickle.dumps(self.champ_list))
+        print(self.csocket.recv(1024))
         
-        #self.csocket.send(("This is where we fail folks!").encode())
-
-        #self.csocket.close()
         
 def input_champion(connection: socket,
                    champions,
@@ -39,7 +37,9 @@ def input_champion(connection: socket,
     #Prompt the player to choose a champion and provide the reason why
     #certain champion cannot be selected
     
+    print(f"talking to {connection}")
     while True:
+        print("in the while loop")
         connection.send(("Please input a Champion!").encode())
         name = connection.recv(1024).decode()
         print (name)
@@ -52,7 +52,7 @@ def input_champion(connection: socket,
                 connection.send((f'{name} is in the enemy team. Try again.').encode())
             case _:
                 player1.append(name)
-                connection.send((f"{name} is added to your rooster."))
+                connection.send((f"{name} is added to your rooster.").encode())
                 break
         
 
@@ -77,9 +77,11 @@ def main():
             for t in threads:
                 print("connection at: ", t.csocket)
                 t.start()
-            for _ in range(2):
-                input_champion(threads[0].csocket, champ_list, player1, player2)
-                input_champion(threads[1].csocket, champ_list, player1, player2)
+
+            #for _ in range(2):
+                #input_champion(threads[0].csocket, champ_list, player1, player2)
+                #input_champion(threads[1].csocket, champ_list, player1, player2)
+
                 
     
         
