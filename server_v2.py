@@ -7,7 +7,7 @@ import pickle
 
 threads = []
 champions_selected = []
-mylock = 1
+mylock = threading.Lock()
 player1 = []
 player2 = []
 champ_list = {}
@@ -27,6 +27,13 @@ class Client_thread(Thread):
         self.csocket.send(self.client_number.encode())
         self.csocket.send(pickle.dumps(self.champ_list))
         print(self.csocket.recv(1024))
+        for _ in range(2):
+            mylock.acquire()
+            if int(self.client_number)==1:
+                input_champion(self.csocket, self.champ_list, player1, player2)
+            else:
+                input_champion(self.csocket, self.champ_list, player2, player1)
+            mylock.release()
         
         
 def input_champion(connection: socket,
@@ -72,7 +79,9 @@ def main():
         conn, adr = sock.accept()
         threadCount = threadCount + 1
         #newthread = Client_thread(conn, adr, threadCount, champ_list)
+        
         threads.append(Client_thread(conn, adr, threadCount, champ_list))
+        #print(mylock)
         if len(threads) == 2:
             for t in threads:
                 print("connection at: ", t.csocket)
@@ -81,6 +90,8 @@ def main():
             #for _ in range(2):
                 #input_champion(threads[0].csocket, champ_list, player1, player2)
                 #input_champion(threads[1].csocket, champ_list, player1, player2)
+        #sock.close()
+        #newthread.start()
 
                 
     

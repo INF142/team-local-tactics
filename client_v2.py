@@ -49,12 +49,10 @@ def main():
     print(print_available_champs(pickle.loads(sock.recv(1024))))
     sock.send("rello".encode())
     
-    
-    
-    #while True:
-        #print(sock.recv(1024).decode())
-        #sock.send(input(">").encode())
-        #print(sock.recv(1024).decode())
+    for _ in range (2):
+        print(sock.recv(1024).decode())
+        sock.send(input(">").encode())
+        print(sock.recv(1024).decode())
     
     #print(sock.recv(1024).decode())
 
