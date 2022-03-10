@@ -24,7 +24,7 @@ def print_available_champs(champions: dict[Champion]) -> None:
 
     print(available_champs)
 
-
+#testing branch 2
 def input_champion(prompt: str,
                    color: str,
                    champions: dict[Champion],
