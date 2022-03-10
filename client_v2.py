@@ -50,9 +50,17 @@ def main():
     sock.send("rello".encode())
     
     for _ in range (2):
-        print(sock.recv(1024).decode())
-        sock.send(input(">").encode())
-        print(sock.recv(1024).decode())
+        a = True
+        while a == True:
+            a = False
+            print(sock.recv(1024).decode())
+            print("nisse")
+            name = input("champion > ")
+            sock.send(name.encode())
+            response = sock.recv(1024).decode()
+            print(response)
+            if response != f"{name} is added to your rooster.":
+                a = True
     
     #print(sock.recv(1024).decode())
 

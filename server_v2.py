@@ -13,6 +13,7 @@ player2 = []
 champ_list = {}
 
 class Client_thread(Thread):
+    
     def __init__(self,conn,adr, number, champ_list):
         Thread.__init__(self)
         self.csocket = conn
@@ -23,23 +24,31 @@ class Client_thread(Thread):
         print("connection at: ", conn)
         
     def run(self):
+        counter = 1
+
         print("number is: ", self.client_number)
         self.csocket.send(self.client_number.encode())
         self.csocket.send(pickle.dumps(self.champ_list))
         print(self.csocket.recv(1024))
         for _ in range(2):
-            mylock.acquire()
-            if int(self.client_number)==1:
+            if int(self.client_number)==counter:
+                counter = counter + 1
+                mylock.acquire()
                 input_champion(self.csocket, self.champ_list, player1, player2)
+                mylock.release()
+                continue
             else:
+                counter = counter - 1 
+                mylock.acquire()
                 input_champion(self.csocket, self.champ_list, player2, player1)
-            mylock.release()
+                mylock.release()
+                continue
         
         
 def input_champion(connection: socket,
                    champions,
-                   player1: list[str],
-                   player2: list[str]) -> None:
+                   p1: list[str],
+                   p2: list[str]) -> None:
 
     #Prompt the player to choose a champion and provide the reason why
     #certain champion cannot be selected
@@ -53,13 +62,14 @@ def input_champion(connection: socket,
         match name:
             case name if name not in champions:
                 connection.send((f"The champion {name} is not available. Try again.").encode())
-            case name if name in player1:
+            case name if name in p1:
                 connection.send((f'{name} is already in your team. Try again.').encode())
-            case name if name in player2:
+            case name if name in p2:
                 connection.send((f'{name} is in the enemy team. Try again.').encode())
             case _:
-                player1.append(name)
+                p1.append(name)
                 connection.send((f"{name} is added to your rooster.").encode())
+                print(p1)
                 break
         
 
