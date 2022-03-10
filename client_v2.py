@@ -49,15 +49,14 @@ def main():
     print(print_available_champs(pickle.loads(sock.recv(1024))))
     sock.send("rello".encode())
     
-    for _ in range (2):
-        a = True
-        while a == True:
+    a = True
+    while a == True:
             a = False
             print(sock.recv(1024).decode())
             name = input("champion > ")
             sock.send(name.encode())
             response = sock.recv(1024).decode()
-            print(response)
+            print(response, "\n")
             if response != f"{name} is added to your rooster.":
                 a = True
     

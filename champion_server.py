@@ -10,6 +10,7 @@ sock.listen()
 while True:
         conn, _ = sock.accept()
         conn.send(pickle.dumps(tlt.load_some_champs()))
+        #print(conn.recv(1024).decode())
         conn.close()
         
 #TODO: implement a datbase

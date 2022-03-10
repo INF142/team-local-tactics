@@ -1,10 +1,11 @@
 from socket import socket, SOL_SOCKET, SO_REUSEADDR
 from threading import *
-import threading
+
+from zmq import Socket
 import team_local_tactics as tlt
 from _thread import *
 import pickle
-from core import  Match, Shape, Team, Champion
+from core import  Match, Shape, Team
 from rich.table import Table
 
 threads = []
@@ -50,10 +51,8 @@ def input_champion(connection: socket,
     
     print(f"talking to {connection}")
     while True:
-        print("in the while loop")
         connection.send(("Please input a Champion!").encode())
         name = connection.recv(1024).decode()
-        print (name)
         match name:
             case name if name not in champions:
                 connection.send((f"The champion {name} is not available. Try again.").encode())
@@ -64,10 +63,9 @@ def input_champion(connection: socket,
             case _:
                 p1.append(name)
                 connection.send((f"{name} is added to your rooster.").encode())
-                print(p1)
                 break
             
-def print_match_summary(match: Match) -> None:
+def print_match_summary(match: Match, sock: Socket) -> None:
     
     EMOJI = {
         Shape.ROCK: ':raised_fist-emoji:',
@@ -105,10 +103,13 @@ def print_match_summary(match: Match) -> None:
     # Print the winner
     if red_score > blue_score:
         print('\n[red]Red victory! :grin:')
+        sock.send("[red]Red victory! :grin:".encode())
     elif red_score < blue_score:
         print('\n[blue]Blue victory! :grin:')
+        sock.send("[blue]Blue victory! :grin:".encode())
     else:
         print('\nDraw :expressionless:')
+        sock.send("Draw :expressionless:".encode())
         
 
 def main():
@@ -153,4 +154,3 @@ def main():
 if __name__ == "__main__":
     main()
     
-#TODO: implement threading
