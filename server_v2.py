@@ -4,10 +4,11 @@ import threading
 import team_local_tactics as tlt
 from _thread import *
 import pickle
+from core import  Match, Shape, Team, Champion
+from rich.table import Table
 
 threads = []
 champions_selected = []
-mylock = threading.Lock()
 player1 = []
 player2 = []
 champ_list = {}
@@ -24,26 +25,20 @@ class Client_thread(Thread):
         print("connection at: ", conn)
         
     def run(self):
-        counter = 1
 
         print("number is: ", self.client_number)
         self.csocket.send(self.client_number.encode())
         self.csocket.send(pickle.dumps(self.champ_list))
         print(self.csocket.recv(1024))
-        for _ in range(2):
-            if int(self.client_number)==counter:
-                counter = counter + 1
-                mylock.acquire()
-                input_champion(self.csocket, self.champ_list, player1, player2)
-                mylock.release()
-                continue
-            else:
-                counter = counter - 1 
-                mylock.acquire()
-                input_champion(self.csocket, self.champ_list, player2, player1)
-                mylock.release()
-                continue
-        
+        if self.client_number == "1":
+            me = player1
+            other = player2
+        else:
+            me = player2
+            other = player1
+        for _ in range (2):
+            input_champion(self.csocket, self.champ_list, me, other)
+            
         
 def input_champion(connection: socket,
                    champions,
@@ -71,6 +66,49 @@ def input_champion(connection: socket,
                 connection.send((f"{name} is added to your rooster.").encode())
                 print(p1)
                 break
+            
+def print_match_summary(match: Match) -> None:
+    
+    EMOJI = {
+        Shape.ROCK: ':raised_fist-emoji:',
+        Shape.PAPER: ':raised_hand-emoji:',
+        Shape.SCISSORS: ':victory_hand-emoji:'
+    }
+
+    # For each round print a table with the results
+    for index, round in enumerate(match.rounds):
+
+        # Create a table containing the results of the round
+        round_summary = Table(title=f'Round {index+1}')
+
+        # Add columns for each team
+        round_summary.add_column("Red",
+                                 style="red",
+                                 no_wrap=True)
+        round_summary.add_column("Blue",
+                                 style="blue",
+                                 no_wrap=True)
+
+        # Populate the table
+        for key in round:
+            red, blue = key.split(', ')
+            round_summary.add_row(f'{red} {EMOJI[round[key].red]}',
+                                  f'{blue} {EMOJI[round[key].blue]}')
+        print(round_summary)
+        print('\n')
+
+    # Print the score
+    red_score, blue_score = match.score
+    print(f'Red: {red_score}\n'
+          f'Blue: {blue_score}')
+
+    # Print the winner
+    if red_score > blue_score:
+        print('\n[red]Red victory! :grin:')
+    elif red_score < blue_score:
+        print('\n[blue]Blue victory! :grin:')
+    else:
+        print('\nDraw :expressionless:')
         
 
 def main():
@@ -96,12 +134,16 @@ def main():
             for t in threads:
                 print("connection at: ", t.csocket)
                 t.start()
+            for t in threads:
+                t.join()
 
-            #for _ in range(2):
-                #input_champion(threads[0].csocket, champ_list, player1, player2)
-                #input_champion(threads[1].csocket, champ_list, player1, player2)
-        #sock.close()
-        #newthread.start()
+            match = Match(
+                Team([champ_list[name] for name in player1]),
+                Team([champ_list[name] for name in player2])
+            )
+            match.play()
+            tlt.print_match_summary(match)
+        
 
                 
     

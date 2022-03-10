@@ -54,7 +54,6 @@ def main():
         while a == True:
             a = False
             print(sock.recv(1024).decode())
-            print("nisse")
             name = input("champion > ")
             sock.send(name.encode())
             response = sock.recv(1024).decode()
@@ -62,6 +61,7 @@ def main():
             if response != f"{name} is added to your rooster.":
                 a = True
     
+    #print(pickle.loads(sock.recv(1024)))
     #print(sock.recv(1024).decode())
 
     sock.close()
